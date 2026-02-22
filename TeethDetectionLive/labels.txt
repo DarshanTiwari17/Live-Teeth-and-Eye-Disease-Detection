@@ -1,0 +1,6 @@
+0 Healthy
+1 Calculus
+2 Caries
+3 Hypodentia
+4 Moth Ulcer
+5 Tooth Discoloration

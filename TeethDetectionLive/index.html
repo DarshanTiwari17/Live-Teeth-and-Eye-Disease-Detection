@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Teeth Disease Detection</title>
+    <!-- Import TensorFlow.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"></script>
+    <!-- Import the TFLite runtime -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite/dist/tf-tflite.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="background-effects">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>AI Dental Analysis</h1>
+            <p>Live Teeth Disease Detection</p>
+        </header>
+
+        <main class="scanner-container glass-panel">
+            <div class="video-wrapper">
+                <video id="webcam" autoplay playsinline muted></video>
+                <div class="scanner-overlay"></div>
+
+                <!-- Status Overlay during model load -->
+                <div id="loading-overlay" class="overlay active">
+                    <div class="spinner"></div>
+                    <p id="loading-text">Initializing AI Model...</p>
+                </div>
+            </div>
+
+            <div class="prediction-panel">
+                <div class="prediction-header">
+                    <h2>Live Diagnosis</h2>
+                    <div class="pulse-indicator">
+                        <span class="dot"></span> Live
+                    </div>
+                </div>
+
+                <div class="predictions-container">
+                    <!-- Teeth Prediction Card -->
+                    <div class="result-card" id="teeth-card">
+                        <h3>🦷 Teeth Analysis</h3>
+                        <h4 id="predicted-class-teeth">Scanning...</h4>
+                        <div class="confidence-bar-container">
+                            <div id="confidence-bar-teeth" class="confidence-bar"></div>
+                        </div>
+                        <p id="confidence-text-teeth" class="confidence-text">Waiting for clearer view...</p>
+                    </div>
+
+                    <!-- Eye Prediction Card -->
+                    <div class="result-card" id="eye-card">
+                        <h3>👁️ Eye Analysis</h3>
+                        <h4 id="predicted-class-eye">Scanning...</h4>
+                        <div class="confidence-bar-container">
+                            <div id="confidence-bar-eye" class="confidence-bar"></div>
+                        </div>
+                        <p id="confidence-text-eye" class="confidence-text">Waiting for clearer view...</p>
+                    </div>
+                </div>
+
+                <div class="instructions">
+                    <p><strong>Instructions:</strong> Ensure good lighting and show your teeth or eye to the camera. The
+                        scanner provides real-time analysis automatically for both.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
