@@ -222,6 +222,40 @@ header p {
     font-weight: 600;
 }
 
+.mode-toggle {
+    display: flex;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 4px;
+    gap: 4px;
+}
+
+.mode-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mode-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.mode-btn.active {
+    background: var(--accent-color);
+    color: #fff;
+    box-shadow: 0 4px 12px var(--accent-glow);
+}
+
 .pulse-indicator {
     display: flex;
     align-items: center;
@@ -321,4 +355,8 @@ header p {
     font-size: 0.95rem;
     color: var(--text-secondary);
     line-height: 1.5;
+}
+
+.hidden {
+    display: none !important;
 }

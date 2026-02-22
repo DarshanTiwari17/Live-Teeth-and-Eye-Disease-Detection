@@ -41,6 +41,12 @@
             <div class="prediction-panel">
                 <div class="prediction-header">
                     <h2>Live Diagnosis</h2>
+
+                    <div class="mode-toggle">
+                        <button id="btn-teeth" class="mode-btn active">🦷 Teeth</button>
+                        <button id="btn-eye" class="mode-btn">👁️ Eyes</button>
+                    </div>
+
                     <div class="pulse-indicator">
                         <span class="dot"></span> Live
                     </div>
@@ -58,7 +64,7 @@
                     </div>
 
                     <!-- Eye Prediction Card -->
-                    <div class="result-card" id="eye-card">
+                    <div class="result-card hidden" id="eye-card">
                         <h3>👁️ Eye Analysis</h3>
                         <h4 id="predicted-class-eye">Scanning...</h4>
                         <div class="confidence-bar-container">
@@ -69,8 +75,8 @@
                 </div>
 
                 <div class="instructions">
-                    <p><strong>Instructions:</strong> Ensure good lighting and show your teeth or eye to the camera. The
-                        scanner provides real-time analysis automatically for both.</p>
+                    <p><strong>Instructions:</strong> Ensure good lighting and select your desired scanning mode above.
+                        The scanner provides real-time analysis automatically.</p>
                 </div>
             </div>
         </main>

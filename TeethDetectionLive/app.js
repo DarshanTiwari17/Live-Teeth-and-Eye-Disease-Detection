@@ -17,6 +17,32 @@ let tfliteModelEye;
 let classLabelsTeeth = [];
 let classLabelsEye = [];
 let isPredicting = false;
+let currentMode = 'teeth'; // Track active mode
+
+// Mode Toggle Elements
+const btnTeeth = document.getElementById('btn-teeth');
+const btnEye = document.getElementById('btn-eye');
+const teethCard = document.getElementById('teeth-card');
+const eyeCard = document.getElementById('eye-card');
+
+// Mode Toggle Listeners
+btnTeeth.addEventListener('click', () => {
+    if (currentMode === 'teeth') return;
+    currentMode = 'teeth';
+    btnTeeth.classList.add('active');
+    btnEye.classList.remove('active');
+    teethCard.classList.remove('hidden');
+    eyeCard.classList.add('hidden');
+});
+
+btnEye.addEventListener('click', () => {
+    if (currentMode === 'eye') return;
+    currentMode = 'eye';
+    btnEye.classList.add('active');
+    btnTeeth.classList.remove('active');
+    eyeCard.classList.remove('hidden');
+    teethCard.classList.add('hidden');
+});
 
 // Configurable constants
 const MODEL_INPUT_SIZE = 224;
@@ -103,55 +129,41 @@ async function predictLoop() {
     isPredicting = true;
 
     if (tfliteModelTeeth && tfliteModelEye) {
-        // Run predictions for both models
-        const modelOutputs = tf.tidy(() => {
+        // Only run prediction for the active model
+        const activeOutputData = tf.tidy(() => {
             const imgTensor = tf.browser.fromPixels(video);
             const resized = tf.image.resizeBilinear(imgTensor, [MODEL_INPUT_SIZE, MODEL_INPUT_SIZE]);
             const normalized = resized.div(255.0);
             const batched = normalized.expandDims(0);
 
-            // Inference teeth
-            const teethPredictionTensor = tfliteModelTeeth.predict(batched);
-            // Inference eye
-            const eyePredictionTensor = tfliteModelEye.predict(batched);
-
-            return [teethPredictionTensor, eyePredictionTensor];
+            if (currentMode === 'teeth') {
+                return tfliteModelTeeth.predict(batched);
+            } else {
+                return tfliteModelEye.predict(batched);
+            }
         });
 
-        // Resolve data synchronously
-        const outputTeethData = await modelOutputs[0].data();
-        const outputEyeData = await modelOutputs[1].data();
+        const outputDataArray = await activeOutputData.data();
 
-        // Find max for teeth
-        let highestProbTeeth = 0;
-        let predictedLabelIndexTeeth = 0;
-        for (let i = 0; i < outputTeethData.length; i++) {
-            if (outputTeethData[i] > highestProbTeeth) {
-                highestProbTeeth = outputTeethData[i];
-                predictedLabelIndexTeeth = i;
+        let highestProb = 0;
+        let predictedLabelIndex = 0;
+        for (let i = 0; i < outputDataArray.length; i++) {
+            if (outputDataArray[i] > highestProb) {
+                highestProb = outputDataArray[i];
+                predictedLabelIndex = i;
             }
         }
 
-        // Find max for eye
-        let highestProbEye = 0;
-        let predictedLabelIndexEye = 0;
-        for (let i = 0; i < outputEyeData.length; i++) {
-            if (outputEyeData[i] > highestProbEye) {
-                highestProbEye = outputEyeData[i];
-                predictedLabelIndexEye = i;
-            }
+        activeOutputData.dispose();
+
+        // Update UI logic based on current model
+        if (currentMode === 'teeth') {
+            const predictedClassNameTeeth = classLabelsTeeth[predictedLabelIndex] || `Class ${predictedLabelIndex}`;
+            updateUI(predictedClassNameTeeth, highestProb, 'teeth');
+        } else {
+            const predictedClassNameEye = classLabelsEye[predictedLabelIndex] || `Class ${predictedLabelIndex}`;
+            updateUI(predictedClassNameEye, highestProb, 'eye');
         }
-
-        // Dispose tensors
-        modelOutputs[0].dispose();
-        modelOutputs[1].dispose();
-
-        // Update UI logic
-        const predictedClassNameTeeth = classLabelsTeeth[predictedLabelIndexTeeth] || `Class ${predictedLabelIndexTeeth}`;
-        const predictedClassNameEye = classLabelsEye[predictedLabelIndexEye] || `Class ${predictedLabelIndexEye}`;
-
-        updateUI(predictedClassNameTeeth, highestProbTeeth, 'teeth');
-        updateUI(predictedClassNameEye, highestProbEye, 'eye');
     }
 
     isPredicting = false;
